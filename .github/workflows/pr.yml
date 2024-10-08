@@ -15,13 +15,16 @@ jobs:
         run: docker login ghcr.io -u chestercodes -p $GITHUB_TOKEN
 
       - name: Set image tag
-        run: IMAGE_TAG=$(date +"v%y%m%d%H%M%S") && echo "IMAGE_TAG=$IMAGE_TAG" >> "$GITHUB_ENV"
+        run: echo "IMAGE_TAG=pr-$GITHUB_SHA" >> "$GITHUB_ENV"
 
-      - name: Build images in parallel
-        run: docker compose -f build.yaml build --parallel
-        working-directory: .
+      - name: Set image tag
+        run: echo "$IMAGE_TAG"
 
-      - name: push images
-        run: docker compose -f build.yaml push
-        working-directory: .
+      # - name: Build images in parallel
+      #   run: docker compose -f build.yaml build --parallel
+      #   working-directory: .
+
+      # - name: push images
+      #   run: docker compose -f build.yaml push
+      #   working-directory: .
 
