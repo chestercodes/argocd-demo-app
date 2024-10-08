@@ -1,0 +1,38 @@
+version: "2.4"
+services:
+  # api:
+  #   build:
+  #     context: ..
+  #     dockerfile: docker/api.Dockerfile
+  #   environment:
+  #     - DB_HOST=172.17.0.1
+  #     - DB_USER=postgres
+  #     - DB_DATABASE=todoapp
+  #     - DB_PASSWORD=pass
+  #     - OTLP_ENDPOINT=http://172.17.0.1:4317
+  #     - IMAGE_TAG=v123
+  #     - ENVNAME=docker
+  dashboard:
+    image: mcr.microsoft.com/dotnet/aspire-dashboard:8.0
+    ports:
+      - '8081:18888'
+      - '4317:18889'
+  # migrations:
+  #   build:
+  #     context: ..
+  #     dockerfile: docker/migrations.Dockerfile
+  #   environment:
+  #     - DB_HOST=172.17.0.1
+  #     - DB_USERNAME=postgres
+  #     - DB_DATABASE=todoapp
+  #     - DB_PASSWORD=pass
+  #   depends_on:
+  #     - db
+  db:
+    image: postgres:latest
+    ports:
+      - '5432:5432'
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=todoapp
+      - POSTGRES_PASSWORD=pass
