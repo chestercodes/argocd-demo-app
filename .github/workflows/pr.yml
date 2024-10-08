@@ -17,14 +17,11 @@ jobs:
       - name: Set image tag
         run: echo "IMAGE_TAG=pr-$GITHUB_SHA" >> "$GITHUB_ENV"
 
-      - name: Set image tag
-        run: echo "$IMAGE_TAG"
+      - name: Build images in parallel
+        run: docker compose -f docker/build.yaml build --parallel
+        working-directory: .
 
-      # - name: Build images in parallel
-      #   run: docker compose -f build.yaml build --parallel
-      #   working-directory: .
-
-      # - name: push images
-      #   run: docker compose -f build.yaml push
-      #   working-directory: .
+      - name: push images
+        run: docker compose -f docker/build.yaml push
+        working-directory: .
 
