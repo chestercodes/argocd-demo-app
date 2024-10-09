@@ -15,10 +15,16 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Login to ghcr
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: docker login ghcr.io -u chestercodes -p $GITHUB_TOKEN
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: chestercodes
+          password: ${{ secrets.DOCKERHUB_PAT }}
+
+      # - name: Login to ghcr
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   run: docker login ghcr.io -u chestercodes -p $GITHUB_TOKEN
 
       - name: Set image tag
         run: IMAGE_TAG=$(date +"v%y%m%d%H%M%S") && echo "IMAGE_TAG=$IMAGE_TAG" >> "$GITHUB_ENV"
