@@ -21,7 +21,9 @@ jobs:
       #   run: docker login ghcr.io -u chestercodes -p $GITHUB_TOKEN
 
       - name: Set image tag
-        run: echo "IMAGE_TAG=pr-$GITHUB_SHA" >> "$GITHUB_ENV"
+        run: echo "IMAGE_TAG=pr-$BRANCH_SHA" >> "$GITHUB_ENV"
+        env:
+          BRANCH_SHA: ${{ github.event.pull_request.head.sha }}
 
       - name: Build images in parallel
         run: docker compose -f docker/build.yaml build --parallel
