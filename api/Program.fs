@@ -13,6 +13,7 @@ open OpenTelemetry.Logs
 open OpenTelemetry.Resources
 open Npgsql
 open api.Shared
+open Microsoft.AspNetCore.Http
 
 module Startup =
     let addService (rb: ResourceBuilder) =
@@ -51,7 +52,19 @@ module Startup =
         |> fun b -> b.WithTracing(fun tracing ->
             tracing
             |> fun t -> t.AddSource(Diagnostics.Instance.ActivitySource.Name)
-            |> fun t -> t.AddAspNetCoreInstrumentation(fun a -> ())
+            |> fun t -> t.AddAspNetCoreInstrumentation(fun a ->
+                let requestFilter (cxt: HttpContext) =
+                    let path = cxt.Request.Path
+                    let sendTraces =
+                        if path.HasValue then
+                            // dont want to have metrics for the health path
+                            not (path.Value.ToLower() = "/health")
+                        else
+                            false
+                    sendTraces
+                a.Filter <- requestFilter
+                ()
+            )
             |> fun t -> t.AddNpgsql(fun x -> x ; x |> ignore)
             |> ignore
         )
@@ -79,7 +92,6 @@ type HealthController (logger : ILogger<HealthController>) =
     [<HttpGet>]
     [<Route("health")>]
     member _.Get() =
-        logger.LogInformation "health called"
         "All is ok"
 
 module Program =

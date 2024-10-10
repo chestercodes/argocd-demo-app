@@ -161,6 +161,7 @@ type TodoItemsController (logger : ILogger<TodoItemsController>) =
     [<HttpGet>]
     [<Route("todoitems")>]
     member _.GetAll(): Task<ActionResult> =
+        logger.LogInformation "GET called"
         Diagnostics.Counters.GetAll_Called.Add 1
         task {
             match! getAll () with
@@ -178,6 +179,7 @@ type TodoItemsController (logger : ILogger<TodoItemsController>) =
     [<HttpPost>]
     [<Route("todoitems")>]
     member _.Add(dto: TodoItemsPostRequest): Task<ActionResult> =
+        logger.LogInformation "POST called"
         Diagnostics.Counters.Post_Called.Add 1
         task {
             let item: UnvalidatedTodoItem = { Content = dto.content; IsComplete = dto.isComplete }
