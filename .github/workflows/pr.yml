@@ -9,22 +9,27 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Login to ghcr
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: chestercodes
+          password: ${{ secrets.DOCKERHUB_PAT }}
+
+      # - name: Login to ghcr
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   run: docker login ghcr.io -u chestercodes -p $GITHUB_TOKEN
+
+      - name: Set image tag
+        run: echo "IMAGE_TAG=pr-$BRANCH_SHA" >> "$GITHUB_ENV"
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: docker login ghcr.io -u chestercodes -p $GITHUB_TOKEN
+          BRANCH_SHA: ${{ github.event.pull_request.head.sha }}
 
-      - name: Set image tag
-        run: echo "IMAGE_TAG=pr-$GITHUB_SHA" >> "$GITHUB_ENV"
+      - name: Build images in parallel
+        run: docker compose -f docker/build.yaml build --parallel
+        working-directory: .
 
-      - name: Set image tag
-        run: echo "$IMAGE_TAG"
-
-      # - name: Build images in parallel
-      #   run: docker compose -f build.yaml build --parallel
-      #   working-directory: .
-
-      # - name: push images
-      #   run: docker compose -f build.yaml push
-      #   working-directory: .
+      - name: push images
+        run: docker compose -f docker/build.yaml push
+        working-directory: .
 
