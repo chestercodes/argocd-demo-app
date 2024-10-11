@@ -1,8 +1,6 @@
 name: Build and publish images
 on:
   push:
-    paths:
-      - '*'
     branches:
       - "main"
     tags-ignore:
