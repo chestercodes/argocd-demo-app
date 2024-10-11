@@ -165,7 +165,7 @@ type TodoItemsController(logger: ILogger<TodoItemsController>) =
             | Ok data ->
                 let resp: TodoItemsGetAllResponse = {
                     items = data |> List.map toDto
-                    count = data.Length + 1
+                    count = data.Length
                 }
 
                 return ok resp
