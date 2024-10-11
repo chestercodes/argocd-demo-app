@@ -1,0 +1,17 @@
+version: "2.4"
+services:
+  migrations:
+    image: docker.io/chestercodes/argocd-demo-app-migrations:${IMAGE_TAG}
+    build:
+      context: ..
+      dockerfile: docker/migrations.Dockerfile
+  end2end:
+    image: docker.io/chestercodes/argocd-demo-app-end2end:${IMAGE_TAG}
+    build:
+      context: ..
+      dockerfile: docker/end2end.Dockerfile
+  api:
+    image: docker.io/chestercodes/argocd-demo-app-api:${IMAGE_TAG}
+    build:
+      context: ..
+      dockerfile: docker/api.Dockerfile

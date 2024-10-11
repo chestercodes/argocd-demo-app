@@ -1,0 +1,17 @@
+GET http://localhost:8080/health
+
+###
+
+GET http://localhost:8080/todoitems
+
+###
+
+POST http://localhost:8080/todoitems
+Content-Type: application/json
+
+{
+    "content": "Write todo app"
+}
+
+###
+
